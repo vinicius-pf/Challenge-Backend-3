@@ -8,11 +8,15 @@ Neste Repositório estão os meus projetos desenvolvidos no mês de Agosto 2022 
 
 ## Sobre o Challenge
 
-O Alura Challenge constitui de 3 desafios semanais para que os participantes pudessem desenvolver novos conhecimentos, aprender novas ferramentas e criar um portifólio na área de Business Inteligence e ciência de dados, enquanto é simulado um fluxo de trabalho em uma empresa. 
-
-Em cada semana do desafio foi enviado uma área de trabalho no [Trello](https://trello.com/), disponibilizando um conjunto de dados e algumas informações pertinentes da empresa, assim como informando as métricas que deveriam ser exibidas na versão final do dashboard. Além disso, foram disponibilizados links para cursos da plataforma Alura, com o intuito de aprofundar o conhecimento dos participantes.
-
 ## Projetos desenvolvidos
+
+Inicialmente foi criada uma venv para a criação e testes da API. Nela foram instaladas as ferramentas Django e Django REST Framework. 
+Nas configurações iniciais, foi criado um projeto 'setup' e foram alteradas algumas configurações: 
+
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Sao_Paulo'
+
+para a criação da API, foi criada uma aplicação 'financias' que irá ser a base.
 
 ## Entre em contato
 
