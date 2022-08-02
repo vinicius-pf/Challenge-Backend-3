@@ -16,7 +16,7 @@ Nas configurações iniciais, foi criado um projeto 'setup' e foram alteradas al
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 
-para a criação da API, foi criada uma aplicação 'financias' que irá ser a base.
+para a criação da API, foi criada uma aplicação 'orcamento' que irá ser a base.
 
 ## Entre em contato
 
