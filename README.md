@@ -10,7 +10,7 @@ Neste Repositório estão os meus projetos desenvolvidos no mês de Agosto 2022 
 
 ## Projetos desenvolvidos
 
-Inicialmente foi criada uma venv para a criação e testes da API. Nela foram instaladas as ferramentas Django e Django REST Framework. 
+Inicialmente foi criada uma venv para a criação e testes da API. Nela foram instaladas as ferramentas Django e Django REST Framework. Para efetuar testes foi utilizado o PostMan.
 Nas configurações iniciais, foi criado um projeto 'setup' e foram alteradas algumas configurações: 
 
 LANGUAGE_CODE = 'pt-br'
