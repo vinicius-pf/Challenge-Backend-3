@@ -5,11 +5,11 @@ class ReceitaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Receita
-        fields = ['id', 'descricao', 'valor', 'data']
+        exclude = []
 
 
 class DespesaSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Despesa
-        fields = ['id', 'descricao', 'valor', 'data']
+        exclude = []
