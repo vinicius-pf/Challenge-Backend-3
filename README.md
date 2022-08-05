@@ -85,9 +85,3 @@ Com a API testada, é possível seguir para os próximos passos da aplicação.
 LinkedIn: https://www.linkedin.com/in/viniciuspf/
 
 E-mail: vinicius-pf@outlook.com
-
-
-
-
-
-
