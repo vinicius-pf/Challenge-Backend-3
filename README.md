@@ -125,10 +125,14 @@ Para o resumo do mês, não foi feito nada ainda
 
 Por último, após os testes manuais feitos por meio do postman, a empresa requisitou que fossem desenvolvidos testes automatizados. Serão feitos testes de unidade e de integração. Além de outros testes que possam ser necessários.
 
+Em conjunto com o teste, foi desenvolvido um script para registrar 50 receitas e 50 despesas ao longo de 10 meses. Isso permite entender melhor o comportamento da API e ficar com mais informações.
+
 
 ### Autenticação importante
 
-Na última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API.
+Na última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API. Além disso, foi requisitado o deploy da API em algum servidor cloud. Para esse projeto foi utilizado o Heroku.
+
+
 
 ## Entre em contato
 
