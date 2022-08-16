@@ -80,7 +80,51 @@ Com a API testada, é possível seguir para os próximos passos da aplicação.
 
 ### Novas funcionalidades
 
-Na segunda semana, a empresa entrou em contato e pediu algumas melhorias na API.
+Na segunda semana, a empresa entrou em contato e pediu algumas melhorias na API. As melhorias requisitadas foram incluir uma categorização para as receitas, busca de receitas e despesas de acordo com a descrição, listagem de receitas e despesas de um determinado mes e um resumo mensal detalhado.
+
+Para a categorização das despesas, a empresa pediu que houvessem 8 categorias presentes. Para implementar, foi incluída uma nova variável no banco de dados, que receberá a informação da categoria da despesa. Essa nova variável tera também um valor padrão.
+
+```python
+  ...
+  class Despesa(models.Model):
+      categorias = (
+          ('A', 'Alimentação'),
+          ('S', 'Saúde'),
+          ('M', 'Moradia'),
+          ('T', 'Transporte'),
+          ('E', 'Educação'),
+          ('L', 'Lazer'),
+          ('I', 'Imprevistos'),
+          ('O', 'Outras')
+      )
+
+      categoria = models.CharField(max_length = 3, choices=categorias, default='O')
+  ...
+```
+
+Para a criação de um mecanismo de busca, a empresa requisitou que essa funcionalidade se desse pelo meio de uma URI `/despesas?descricao=texto`. Essa busca foi implementada com o módulo django-filters. Também podem ser incluidos outros filtros, caso desejável pela empresa.
+
+```python
+  class ReceitasViewSet(viewsets.ModelViewSet):
+      """Listando todas as receitas"""
+      
+      queryset = Receita.objects.all()
+      serializer_class = ReceitaSerializer
+      filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+      search_fields = ['descricao']
+```
+ A biblioteca, no entanto, cria uma url com o final `?search=`. Isso teve que ser alterado nas configurações do programa.
+
+ ```python
+  REST_FRAMEWORK = {
+      'SEARCH_PARAM': 'descricao',
+}
+ ```
+
+Para o resumo do mês, não foi feito nada ainda
+
+Por último, após os testes manuais feitos por meio do postman, a empresa requisitou que fossem desenvolvidos testes automatizados. Serão feitos testes de unidade e de integração. Além de outros testes que possam ser necessários.
+
 
 ### Autenticação importante
 

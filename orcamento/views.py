@@ -44,7 +44,7 @@ class ResumoAnoMesViewset(viewsets.ModelViewSet):
     """Listando um resumo de receitas e despesas por ano e mês."""
 
     receitas = Receita.objects.aggregate(Avg('valor'))
-    despesas = Despesa.objects.all()
+    serializer_class = ReceitaSerializer
 
     def get_queryset(self):
         return self.receitas
