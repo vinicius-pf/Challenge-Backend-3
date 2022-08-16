@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',
     'orcamento',
+    'drf_yasg',
     'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
