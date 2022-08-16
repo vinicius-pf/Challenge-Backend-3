@@ -78,7 +78,13 @@ Por último, foi deletada a entrada no sistema. Essa exclusão de deu pelo méto
 
 Com a API testada, é possível seguir para os próximos passos da aplicação.
 
-### Próximas etapas
+### Novas funcionalidades
+
+Na segunda semana, a empresa entrou em contato e pediu algumas melhorias na API.
+
+### Autenticação importante
+
+Na última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API.
 
 ## Entre em contato
 

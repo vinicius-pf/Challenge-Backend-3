@@ -25,7 +25,7 @@ class Despesa(models.Model):
     descricao = models.CharField(max_length=200, unique_for_month='data', blank=False)
     valor = models.DecimalField(max_digits = 10, decimal_places=2, blank=False)
     data = models.DateField(blank=False)
-    categoria = models.CharField(choices=categorias, default='O')
+    categoria = models.CharField(max_length = 3, choices=categorias, default='O')
 
     def __str__(self):
         return self.descricao
