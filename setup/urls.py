@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from orcamento.views import ReceitasViewSet, DespesasViewSet, ListaReceitasMesViewSet, ListaDespesasMesViewSet, ResumoAnoMesViewset
+from orcamento.views import ReceitasViewSet, DespesasViewSet, ListaReceitasMesViewSet, ListaDespesasMesViewSet, ResumoAnoMesViewSet, UsuarioViewSet
 from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -9,7 +9,6 @@ from drf_yasg import openapi
 router = routers.DefaultRouter()
 router.register('receitas', ReceitasViewSet, basename='Receitas')
 router.register('despesas', DespesasViewSet, basename='Despesas')
-router.register('resumo', ResumoAnoMesViewset, basename='Resumo')
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -31,4 +30,6 @@ urlpatterns = [
     path('despesas/<int:year>/<int:month>', ListaDespesasMesViewSet.as_view({'get':'list'})),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-]
+    path('resumo/<int:ano>/<int:mes>', ResumoAnoMesViewSet.as_view({'get':'list'})),
+    path('user/', UsuarioViewSet.as_view()),
+] + [path('api-auth/', include('rest_framework.urls'))]

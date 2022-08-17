@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Receita(models.Model):
+    usuario = models.ForeignKey('auth.User', related_name='receitas', on_delete=models.CASCADE)
     descricao = models.CharField(max_length=200, unique_for_month='data', blank=False)
     valor = models.DecimalField(max_digits = 10, decimal_places=2, blank=False)
     data = models.DateField(blank=False)
@@ -22,6 +23,7 @@ class Despesa(models.Model):
         ('O', 'Outras')
     )
 
+    usuario = models.ForeignKey('auth.User', related_name='despesas', on_delete=models.CASCADE)
     descricao = models.CharField(max_length=200, unique_for_month='data', blank=False)
     valor = models.DecimalField(max_digits = 10, decimal_places=2, blank=False)
     data = models.DateField(blank=False)
