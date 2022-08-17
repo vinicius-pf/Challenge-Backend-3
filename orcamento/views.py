@@ -69,5 +69,6 @@ class ResumoAnoMesViewSet(viewsets.ViewSet):
         })
 
 class UsuarioViewSet(generics.ListAPIView):
+    """"Lista todos os usuários do sistema"""
     queryset = User.objects.all()
     serializer_class = UsuarioSerializer

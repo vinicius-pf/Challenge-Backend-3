@@ -121,16 +121,85 @@ Para a criação de um mecanismo de busca, a empresa requisitou que essa funcion
 }
  ```
 
-Para o resumo do mês, não foi feito nada ainda
+Para o resumo do mês, foi criado um novo viewset, que irá receber os registros das receitas e das despesas de acordo com o mês e ano.
 
-Por último, após os testes manuais feitos por meio do postman, a empresa requisitou que fossem desenvolvidos testes automatizados. Serão feitos testes de unidade e de integração. Além de outros testes que possam ser necessários.
+```python
+class ResumoAnoMesViewSet(viewsets.ViewSet):
+    """Listando um resumo de receitas e despesas por ano e mês."""
 
-Em conjunto com o teste, foi desenvolvido um script para registrar 50 receitas e 50 despesas ao longo de 10 meses. Isso permite entender melhor o comportamento da API e ficar com mais informações.
+    queryset = Receita.objects.none()
+
+    def list(self, request, ano, mes):
+        soma_receitas = Receita.objects.filter(data__year=ano, data__month=mes).aggregate(Sum('valor')) ['valor__sum'] or 0
+        soma_despesas = Despesa.objects.filter(data__year=ano, data__month=mes).aggregate(Sum('valor')) ['valor__sum'] or 0
+        despesa_por_categoria = Despesa.objects.filter(data__year=ano, data__month=mes).values('categoria').annotate(Total = Sum('valor'))
+        saldo = soma_receitas - soma_despesas
+
+        return Response({
+            'Valor recebido': soma_receitas,
+            'Valor gasto': soma_despesas,
+            'Saldo do mês': saldo,
+            'Despesa por categoria': despesa_por_categoria
+        })
+```
+
+Por último, após os testes manuais feitos por meio do postman, a empresa requisitou que fossem desenvolvidos testes automatizados. Serão feitos testes de unidade e de integração. Além de outros testes que possam ser necessários. Esses testes serão criados após o desenvolvimento das funcionalidades requisitadas na próxima semana.
+
+### Usuários
+
+Na terceira e última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API. A título de testes foram criados usuários por meio da administração do django, sem criar um CRUD novo para os usuários. Além do pedido da empresa, também foi definida uma regra de negócio para que as receitas, despesas e resumos estejam apenas de acordo com o usuário que está logado no momento. Caso o usuário não esteja logado, será requisitado um login.
+
+Para implementar a funcionalidade, foi utilizado um tutorial do [django rest](https://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/). Em conjunto com isso, foram criados dois usuários, que contém registros no banco de dados por meio de uma chave primária.
+
+```python
+class Receita(models.Model):
+    usuario = models.ForeignKey('auth.User', related_name='receitas', on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=200, unique_for_month='data', blank=False)
+    valor = models.DecimalField(max_digits = 10, decimal_places=2, blank=False)
+    data = models.DateField(blank=False)
+
+    def __str__(self):
+        return self.descricao
+```
+
+Além da mudança na base de dados, foi incluido também um novo valor nos serializers das transações.
+
+```python
+usuario = serializers.ReadOnlyField(source='usuario.username')
+```
+
+Também foi criado um serializer para os usuários. Esse serializer permite encontrar as receitas e despesas por usuário. 
+```python
+class UsuarioSerializer(serializers.ModelSerializer):
+
+    receitas = serializers.PrimaryKeyRelatedField(many=True, queryset=Receita.objects.all())
+    despesas = serializers.PrimaryKeyRelatedField(many=True, queryset=Despesa.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'receitas', 'despesas']
+```
+
+Após essa mudança, os viewsets foram alterados para exibir apenas as informações de acordo com o usuário logado no momento.
+
+```python
+
+código viewsets
+
+```
+
+Por último, foram incluidos novos endpoints para tentar um crud de usuarios e efetuar o login na aplicação.
+
+```python
+urls
+```
+
+### Testes
 
 
-### Autenticação importante
+### Deploy
 
-Na última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API. Além disso, foi requisitado o deploy da API em algum servidor cloud. Para esse projeto foi utilizado o Heroku.
+Além disso, foi requisitado o deploy da API em algum servidor cloud. Para esse projeto foi utilizado o Heroku.
 
 
 
