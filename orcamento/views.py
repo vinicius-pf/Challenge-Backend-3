@@ -10,7 +10,10 @@ from django.contrib.auth.models import User
 class ReceitasViewSet(viewsets.ModelViewSet):
     """Listando todas as receitas"""
 
-    queryset = Receita.objects.all()
+    def get_queryset(self):
+        queryset = Receita.objects.filter(usuario=self.request.user)
+        return queryset
+
     serializer_class = ReceitaSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['descricao']
@@ -21,7 +24,9 @@ class ReceitasViewSet(viewsets.ModelViewSet):
 class DespesasViewSet(viewsets.ModelViewSet):
     """Listando todas as receitas"""
 
-    queryset = Despesa.objects.all()
+    def get_queryset(self):
+        queryset = Despesa.objects.filter(usuario=self.request.user)
+        return queryset
     serializer_class = DespesaSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['descricao']
@@ -38,7 +43,7 @@ class ListaReceitasMesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         ano = self.kwargs['year']
         mes = self.kwargs['month']
-        return Receita.objects.filter(data__year=ano, data__month=mes)
+        return Receita.objects.filter(data__year=ano, data__month=mes, usuario=self.request.user)
 
 class ListaDespesasMesViewSet(viewsets.ModelViewSet):
     """Listando as despesas por ano e mês"""
@@ -48,7 +53,7 @@ class ListaDespesasMesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         ano = self.kwargs['year']
         mes = self.kwargs['month']
-        return Despesa.objects.filter(data__year=ano, data__month=mes)
+        return Despesa.objects.filter(data__year=ano, data__month=mes, usuario=self.request.user)
 
 class ResumoAnoMesViewSet(viewsets.ViewSet):
     """Listando um resumo de receitas e despesas por ano e mês."""
@@ -56,9 +61,9 @@ class ResumoAnoMesViewSet(viewsets.ViewSet):
     queryset = Receita.objects.none()
 
     def list(self, request, ano, mes):
-        soma_receitas = Receita.objects.filter(data__year=ano, data__month=mes).aggregate(Sum('valor')) ['valor__sum'] or 0
-        soma_despesas = Despesa.objects.filter(data__year=ano, data__month=mes).aggregate(Sum('valor')) ['valor__sum'] or 0
-        despesa_por_categoria = Despesa.objects.filter(data__year=ano, data__month=mes).values('categoria').annotate(Total = Sum('valor'))
+        soma_receitas = Receita.objects.filter(data__year=ano, data__month=mes, usuario=self.request.user).aggregate(Sum('valor')) ['valor__sum'] or 0
+        soma_despesas = Despesa.objects.filter(data__year=ano, data__month=mes, usuario=self.request.user).aggregate(Sum('valor')) ['valor__sum'] or 0
+        despesa_por_categoria = Despesa.objects.filter(data__year=ano, data__month=mes, usuario=self.request.user).values('categoria').annotate(Total = Sum('valor'))
         saldo = soma_receitas - soma_despesas
 
         return Response({

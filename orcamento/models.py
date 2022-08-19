@@ -1,15 +1,21 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
-# Create your models here.
 
 class Receita(models.Model):
     usuario = models.ForeignKey('auth.User', related_name='receitas', on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=200, unique_for_month='data', blank=False)
+    descricao = models.CharField(max_length=200, blank=False)
     valor = models.DecimalField(max_digits = 10, decimal_places=2, blank=False)
     data = models.DateField(blank=False)
 
     def __str__(self):
         return self.descricao
+
+    def save(self, *args, **kwargs):
+        if Receita.objects.filter(descricao = self.descricao, data__year = self.data.year, data__month=self.data.month, usuario=self.usuario):
+            raise ValidationError("Descrição já cadastrada no mês")
+        
+        super(Receita, self).save()
 
 class Despesa(models.Model):
     categorias = (
@@ -31,4 +37,10 @@ class Despesa(models.Model):
 
     def __str__(self):
         return self.descricao
+
+    def save(self, *args, **kwargs):
+        if Despesa.objects.filter(descricao = self.descricao, data__year = self.data.year, data__month=self.data.month, usuario=self.usuario):
+            raise ValidationError("Descrição já cadastrada no mês")
+        
+        super(Receita, self).save()
 

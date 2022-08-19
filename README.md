@@ -147,7 +147,7 @@ Por último, após os testes manuais feitos por meio do postman, a empresa requi
 
 ### Usuários
 
-Na terceira e última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API. A título de testes foram criados usuários por meio da administração do django, sem criar um CRUD novo para os usuários. Além do pedido da empresa, também foi definida uma regra de negócio para que as receitas, despesas e resumos estejam apenas de acordo com o usuário que está logado no momento. Caso o usuário não esteja logado, será requisitado um login.
+Na terceira e última semana, a empresa requisitou que apenas usuários autenticados possam acessar a API. A título de testes foram criados usuários por meio da administração do django, sem criar um CRUD novo para os usuários. Além do pedido da empresa, também foi definida uma regra de negócio para que as receitas, despesas e resumos apresentadas nos endpoints sejam apenas do usuário que está logado no momento. Caso o usuário não esteja logado, será requisitado um login.
 
 Para implementar a funcionalidade, foi utilizado um tutorial do [django rest](https://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/). Em conjunto com isso, foram criados dois usuários, que contém registros no banco de dados por meio de uma chave primária.
 
@@ -162,13 +162,8 @@ class Receita(models.Model):
         return self.descricao
 ```
 
-Além da mudança na base de dados, foi incluido também um novo valor nos serializers das transações.
+Também foi criado um serializer para os usuários. Esse serializer permite encontrar as receitas e despesas por usuário.
 
-```python
-usuario = serializers.ReadOnlyField(source='usuario.username')
-```
-
-Também foi criado um serializer para os usuários. Esse serializer permite encontrar as receitas e despesas por usuário. 
 ```python
 class UsuarioSerializer(serializers.ModelSerializer):
 
@@ -183,9 +178,19 @@ class UsuarioSerializer(serializers.ModelSerializer):
 Após essa mudança, os viewsets foram alterados para exibir apenas as informações de acordo com o usuário logado no momento.
 
 ```python
+class ReceitasViewSet(viewsets.ModelViewSet):
+    """Listando todas as receitas"""
 
-código viewsets
+    def get_queryset(self):
+        queryset = Receita.objects.filter(usuario=self.request.user)
+        return queryset
 
+    serializer_class = ReceitaSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ['descricao']
+
+    def perform_create(self, serializer):
+        serializer.save(usuario=self.request.user)
 ```
 
 Por último, foram incluidos novos endpoints para tentar um crud de usuarios e efetuar o login na aplicação.
@@ -196,6 +201,7 @@ urls
 
 ### Testes
 
+Os testes foram feitos utilizando o método TestCase do django. Os testes foram feitos e armazenados em na pasta `'tests'` e separados de acordo com o arquivo que estava sendo testado.
 
 ### Deploy
 
