@@ -199,9 +199,37 @@ Por último, foram incluidos novos endpoints para tentar um crud de usuarios e e
 urls
 ```
 
-### Testes
+### Testes automatizados
+
+Além dos testes feitos com o postman na primeira semana, a empresa requisitou também que fossem feitos testes automatizados para verificar se as regras de negócio estão funcionando conforme o esperado. Além dos testes automatizados dos endpoints, foram criados também outros testes de integração e de unidade.
 
 Os testes foram feitos utilizando o método TestCase do django. Os testes foram feitos e armazenados em na pasta `'tests'` e separados de acordo com o arquivo que estava sendo testado.
+
+Primeiramente foram testados os modelos desenvolvidos, com o intuito de verificar a integridade das informações passadas aos banco de dados. Foram feitos testes para os dois modelos, criando uma transação específica para os testes e conferindo se as informções passadas estavam corretas no banco de dados.
+
+```python
+...
+class ReceitaModelTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user('c3po', password = 'r2d2')
+
+        self.receita = Receita(
+            descricao = 'Receita do teste Automatizado',
+            valor = 200,
+            data = '2022-08-20',
+            usuario = self.user
+        )
+    
+    def test_verifica_informacoes_da_receita(self):
+        """Teste que verifica as informações da receita com valores passados no setUp"""
+
+        self.assertEqual(self.receita.descricao, 'Receita do teste Automatizado')
+        self.assertEqual(self.receita.valor, 200)
+        self.assertEqual(self.receita.data, '2022-08-20')
+        self.assertEqual(self.receita.usuario, self.user)
+...
+```
 
 ### Deploy
 
