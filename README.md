@@ -5,6 +5,9 @@ Neste Repositório estão os meus projetos desenvolvidos no mês de Agosto 2022 
 * [Sobre o Challenge](#sobre-o-challenge)
 * [Desenvolvimento do Projeto](#desenvolvimento-do-projeto)
   + [Criação da API](#criação-da-api)
+  + [Novas funcionalidades](#novas-funcionalidades)
+  + [Usuários](#usuarios)
+  + [Testes Automatizados](#testes-automatizados)
 * [Entre em Contato](#entre-em-contato)
 
 ## Sobre o Challenge
