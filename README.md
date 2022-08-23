@@ -6,7 +6,7 @@ Neste Repositório estão os meus projetos desenvolvidos no mês de Agosto 2022 
 * [Desenvolvimento do Projeto](#desenvolvimento-do-projeto)
   + [Criação da API](#criação-da-api)
   + [Novas funcionalidades](#novas-funcionalidades)
-  + [Usuários](#usuarios)
+  + [Usuários](#usuários)
   + [Testes Automatizados](#testes-automatizados)
 * [Entre em Contato](#entre-em-contato)
 
