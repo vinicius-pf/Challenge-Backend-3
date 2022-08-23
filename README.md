@@ -214,19 +214,6 @@ class Receita(models.Model):
         super(Receita, self).save()
 ```
 
-Após isso, foi criado um serializer para os usuários. Esse serializer vai permitir criar um *viewset* que irá exibir as receitas e despesas de cada usuário, caso seja necessário.
-
-```python
-class UsuarioSerializer(serializers.ModelSerializer):
-
-    receitas = serializers.PrimaryKeyRelatedField(many=True, queryset=Receita.objects.all())
-    despesas = serializers.PrimaryKeyRelatedField(many=True, queryset=Despesa.objects.all())
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'receitas', 'despesas']
-```
-
 Após o ajuste nos serializers, as *viewsets* já criadas também foram alterados para que fossem exibidos apenas as informações referentes ao usuário logado no momento. Também foi redefinida a função `'perform_create'` para que, no momento de criação das receitas ou despesas, o usuário estivesse relacionado com a transação.
 
 ```python
@@ -245,10 +232,17 @@ class ReceitasViewSet(viewsets.ModelViewSet):
         serializer.save(usuario=self.request.user)
 ```
 
-Por último, foram incluidos novos endpoints para tentar um crud de usuarios e efetuar o login na aplicação.
+Além dos endpoints no pedido da empresa, também foi criado um endpoint para a documentação da API com *swagger*.
 
 ```python
-urls
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include(router.urls)),
+    path('receitas/<int:year>/<int:month>', ListaReceitasMesViewSet.as_view({'get':'list'})),
+    path('despesas/<int:year>/<int:month>', ListaDespesasMesViewSet.as_view({'get':'list'})),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('resumo/<int:ano>/<int:mes>', ResumoAnoMesViewSet.as_view({'get':'list'})),
+]
 ```
 
 ### Testes automatizados
@@ -313,14 +307,51 @@ class DespesaSerializerTestCase(TestCase):
         self.assertAlmostEqual(float(data['valor']), self.despesa.valor, places = 2)
         self.assertEqual(data['categoria'], 'Imprevistos')
 ```
+Na última etapa dos testes automatizados, foram feitos testes de autenticação para garantir que apenas usuários cadastrados e com credenciais corretas possam interagir com a API.
 
-Testes de URIs
+```python
+class AuthenticationUserReceitaTestCase(APITestCase):
+    
+    def setUp(self):
+        self.list_url_receita = reverse('Receitas-list')
+        self.list_url_despesa = reverse('Despesas-list')
+        self.user = User.objects.create_user('c3po', password = 'r2d2')
+    
+    def test_autenticacao_de_um_user_com_credenciais_corretas(self):
+        """Teste que verifica a authenticação de um user com as credenciais corretas."""
 
-Além disso, também foram feitos testes de autenticação para garantir que apenas usuários cadastrados e com credenciais corretas possam acessar as APIs do sistema.
+        user = authenticate(username= 'c3po', password='r2d2')
+        self.assertTrue((user is not None) and user.is_authenticated)
 
-### Deploy
+    def test_requisicao_get_nao_autorizada(self):
+        """Teste que verifica uma requisição GET não autorizada nas URIs de receita e despesa."""
 
-Além disso, foi requisitado o deploy da API em algum servidor cloud. Para esse projeto foi utilizado o Heroku.
+        response_receita = self.client.get(self.list_url_receita)
+        response_despesa = self.client.get(self.list_url_despesa)
+        self.assertEqual(response_receita.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response_despesa.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_autenticacao_de_user_com_username_incorreto(self):
+        """Teste que verifica a autenticação de usuários com user_name incorreto."""
+
+        user = authenticate(username= 'cp3o', password='r2d2')
+        self.assertFalse((user is not None) and user.is_authenticated)
+    
+    def test_autenticacao_de_user_com_senha_incorreta(self):
+        """Teste que verifica a autenticação de usuários com senha incorreta."""
+
+        user = authenticate(username= 'c3po', password='r22d')
+        self.assertFalse((user is not None) and user.is_authenticated)
+
+    def test_requisicao_get_com_user_autenticado(self):
+        """Teste que verifica uma requisição GET de um user autenticado"""
+
+        self.client.force_authenticate(self.user)
+        response_receita = self.client.get(self.list_url_receita)
+        response_despesa = self.client.get(self.list_url_despesa)
+        self.assertEqual(response_receita.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_despesa.status_code, status.HTTP_200_OK)
+```
 
 ## Entre em contato
 

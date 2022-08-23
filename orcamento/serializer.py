@@ -19,12 +19,3 @@ class DespesaSerializer(serializers.ModelSerializer):
 
     def get_categoria(self, obj):
         return obj.get_categoria_display()
-
-class UsuarioSerializer(serializers.ModelSerializer):
-
-    receitas = serializers.PrimaryKeyRelatedField(many=True, queryset=Receita.objects.all())
-    despesas = serializers.PrimaryKeyRelatedField(many=True, queryset=Despesa.objects.all())
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'receitas', 'despesas']

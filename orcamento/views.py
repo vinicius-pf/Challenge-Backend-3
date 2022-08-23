@@ -1,11 +1,9 @@
-from rest_framework import viewsets, filters, generics
+from rest_framework import viewsets, filters
 from orcamento.models import Receita, Despesa
-from orcamento.serializer import ReceitaSerializer, DespesaSerializer, UsuarioSerializer
+from orcamento.serializer import ReceitaSerializer, DespesaSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.db.models import Sum
-from django.contrib.auth.models import User
-
 
 class ReceitasViewSet(viewsets.ModelViewSet):
     """Listando todas as receitas"""
@@ -72,8 +70,3 @@ class ResumoAnoMesViewSet(viewsets.ViewSet):
             'Saldo do mês': saldo,
             'Despesa por categoria': despesa_por_categoria
         })
-
-class UsuarioViewSet(generics.ListAPIView):
-    """"Lista todos os usuários do sistema"""
-    queryset = User.objects.all()
-    serializer_class = UsuarioSerializer
